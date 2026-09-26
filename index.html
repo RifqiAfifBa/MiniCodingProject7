@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Expense & Budget Visualizer — track daily spending, total balance, history and spending by category." />
+  <meta name="theme-color" content="#f6f7f9" />
+  <title>Expense &amp; Budget Visualizer</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+  <script src="js/app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <h1 class="site-title">Expense &amp; Budget Visualizer</h1>
+      <button id="themeToggle" class="theme-toggle" type="button" aria-pressed="false" aria-label="Switch to dark mode" title="Dark / light mode">
+        <span class="theme-icon" aria-hidden="true">🌙</span>
+        <span class="theme-label">Dark</span>
+      </button>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    <!-- Total Balance hero -->
+    <section class="card hero" aria-labelledby="balanceLabel">
+      <p id="balanceLabel" class="eyebrow">Total Balance</p>
+      <p class="balance-amount" aria-live="polite"><span id="totalBalance">$0.00</span></p>
+      <p class="hero-sub"><span id="txCount">0 transactions</span><span class="dot" aria-hidden="true"> • </span><span id="monthSummary">This month: $0.00</span></p>
+
+      <div class="budget-strip">
+        <label class="budget-label" for="budgetInput">Monthly budget limit</label>
+        <div class="budget-row">
+          <div class="budget-field">
+            <span aria-hidden="true">$</span>
+            <input id="budgetInput" type="number" min="0" step="0.01" inputmode="decimal" placeholder="e.g. 500" />
+          </div>
+          <button id="budgetSave" class="btn btn-ghost" type="button">Set limit</button>
+          <button id="budgetClear" class="btn btn-ghost" type="button" title="Remove budget limit">Clear</button>
+        </div>
+        <div class="budget-progress" aria-hidden="true">
+          <div id="budgetBar" class="budget-bar" style="width:0%"></div>
+        </div>
+        <p id="budgetMsg" class="budget-msg" role="status"></p>
+      </div>
+    </section>
+
+    <!-- Add Transaction -->
+    <section class="card" aria-labelledby="formTitle">
+      <h2 id="formTitle" class="card-title">Add Transaction</h2>
+      <form id="txForm" novalidate>
+        <div class="field">
+          <label for="itemName">Item Name</label>
+          <input id="itemName" name="itemName" type="text" placeholder="e.g. Cilok" autocomplete="off" maxlength="60" required />
+        </div>
+        <div class="field">
+          <label for="itemAmount">Amount</label>
+          <input id="itemAmount" name="itemAmount" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="e.g. 14.94" required />
+        </div>
+        <div class="field">
+          <label for="itemCategory">Category</label>
+          <select id="itemCategory" name="itemCategory" required></select>
+          <div class="category-tools">
+            <button id="newCatBtn" class="link-btn" type="button">+ New category</button>
+            <div id="newCatRow" class="newcat-row" hidden>
+              <input id="newCatInput" type="text" placeholder="Category name" maxlength="24" aria-label="New category name" />
+              <button id="newCatAdd" class="btn btn-small" type="button">Add</button>
+              <button id="newCatCancel" class="btn btn-small btn-ghost" type="button">Cancel</button>
+            </div>
+            <div id="customCats" class="chip-row" aria-label="Custom categories"></div>
+          </div>
+        </div>
+        <p id="formError" class="form-error" role="alert" hidden></p>
+        <button class="btn btn-primary btn-block" type="submit">Add Transaction</button>
+      </form>
+    </section>
+
+    <!-- Transactions + Chart -->
+    <div class="grid-2">
+      <section class="card" aria-labelledby="listTitle">
+        <div class="card-head">
+          <h2 id="listTitle" class="card-title">Transactions</h2>
+          <label class="sort-wrap">Sort
+            <select id="sortSelect" aria-label="Sort transactions">
+              <option value="newest">Newest first</option>
+              <option value="oldest">Oldest first</option>
+              <option value="amount-desc">Amount: high to low</option>
+              <option value="amount-asc">Amount: low to high</option>
+              <option value="name-asc">Name: A to Z</option>
+              <option value="category-asc">Category: A to Z</option>
+            </select>
+          </label>
+        </div>
+        <div id="txList" class="tx-list" role="list" aria-live="polite"></div>
+        <div id="txEmpty" class="empty">
+          <p class="empty-title">No transactions yet</p>
+          <p class="empty-sub">Add your first expense above to see it here.</p>
+          <button id="sampleBtn" class="btn btn-ghost btn-small" type="button">Add sample data</button>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="chartTitle">
+        <h2 id="chartTitle" class="card-title">Spending by Category</h2>
+        <div class="chart-wrap">
+          <canvas id="spendingChart" height="280" aria-label="Pie chart of spending by category" role="img"></canvas>
+        </div>
+        <div id="chartEmpty" class="empty empty-small" hidden>
+          <p class="empty-sub">Chart will appear once you add transactions.</p>
+        </div>
+        <div id="categoryBreakdown" class="breakdown"></div>
+      </section>
+    </div>
+
+    <footer class="site-footer">
+      <p>Data is stored only in your browser (Local Storage). No account, no server.</p>
+    </footer>
+  </main>
+</body>
+</html>
